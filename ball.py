@@ -1,49 +1,32 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ball():
+class Ball(Sprite):
+    """A clas to manage ball kicked from the attacker."""
 
-    def __init__(self, ai_settings, screen):
-        """Initialize the ship and set its starting position."""
+    def __init__(self, ai_settings, screen, attacker):
+        """Create a ball abject at the attacker's current position."""
+        super(Ball, self).__init__()
         self.screen = screen
-        self.ai_settings = ai_settings
 
-        # Load the ship image and get its rect.
+        # Load the ball image and get its rect.
         self.image = pygame.image.load('images/ball.bmp')
         self.rect = self.image.get_rect()
-        self.screen_rect = screen.get_rect()
+        self.rect.bottom = attacker.rect.bottom
+        self.rect.right = attacker.rect.right
 
-        # Start each new ship at the bottom center of the screen.
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.centery = self.screen_rect.centery
+        # Store ball's postion as a decimal value.
+        self.x = float(self.rect.x)
 
-        #Store a decimal value for the ship's center.
-        self.centerx = float(self.rect.centerx)
-        self.centery = float(self.rect.centery)
-
-        # Movement flag
-        self.moving_right = False
-        self.moving_left = False
-        self.moving_up = False
-        self.moving_down = False
+        self.speed_factor = ai_settings.ball_speed_factor
 
     def update(self):
-        """Update the ship's position based on the movement flag."""
-        # Update the ship's center value, not the rect.
-        if self.moving_right and self.rect.right < self.screen_rect.right:
-            self.centerx += self.ai_settings.ball_speed_factor
-        if self.moving_left and self.rect.left > 0:
-            self.centerx -= self.ai_settings.ball_speed_factor
-        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
-            self.centery += self.ai_settings.ball_speed_factor
-        if self.moving_up and self.rect.top > 0:
-            self.centery -= self.ai_settings.ball_speed_factor
+        """Move  the ball on the righ of the screen."""
+        # Update the decimal position of the ball.
+        self.x += self.speed_factor
+        # Update the rect postion.
+        self.rect.x = self.x
 
-        # Update rect object from self.center.
-        self.rect.centerx = self.centerx
-        self.rect.centery = self.centery
-
-    def blitme(self):
-        """Draw the ship at its current location."""
+    def draw_ball(self):
+        """Draw the ball to the screen."""
         self.screen.blit(self.image, self.rect)
-
-

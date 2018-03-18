@@ -2,43 +2,72 @@ import sys
 
 import pygame
 
-def check_keydown_events(event, ball):
+from ball import Ball
+#from settings import Settings
+
+#ai_settings = Settings()
+
+def check_keydown_events(event, ai_settings, screen, attacker, balls):
     """Respond to keypresses."""
     if event.key == pygame.K_RIGHT:
-        ball.moving_right = True
+        attacker.moving_right = True
     elif event.key == pygame.K_LEFT:
-        ball.moving_left = True
+        attacker.moving_left = True
     elif event.key == pygame.K_UP:
-        ball.moving_up = True
+        attacker.moving_up = True
     elif event.key == pygame.K_DOWN:
-        ball.moving_down = True
+        attacker.moving_down = True
+    elif event.key == pygame.K_SPACE:
+        kick_ball(ai_settings, screen, attacker, balls)
 
-def check_keyup_events(event, ball):
+def kick_ball(ai_settings, screen, attacker, balls):
+    """Kick a ball if limit is not reached yet."""
+    # Create a new ball and add it to the balls group.
+    if len(balls) < ai_settings.balls_allowed:
+        new_ball = Ball(ai_settings, screen, attacker)
+        balls.add(new_ball)
+
+def check_keyup_events(event, attacker):
     """Respond to key releases."""
     if event.key == pygame.K_RIGHT:
-        ball.moving_right = False
+        attacker.moving_right = False
     elif event.key == pygame.K_LEFT:
-        ball.moving_left = False
+        attacker.moving_left = False
     elif event.key == pygame.K_UP:
-        ball.moving_up = False
+        attacker.moving_up = False
     elif event.key == pygame.K_DOWN:
-        ball.moving_down = False
+        attacker.moving_down = False
 
-def check_events(ball):
+def check_events (ai_settings, screen, attacker, balls):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ball)
+            check_keydown_events(event, ai_settings, screen, attacker, balls)
         elif event.type == pygame.KEYUP:
-            check_keyup_events(event, ball)
+            check_keyup_events(event, attacker)
 
-def update_screen(ai_settings, screen, ball):
+def update_screen(ai_settings, screen, attacker, balls):
     """Update images on the screen and flip to the new screen."""
     # Redraw the screen during each pass through the loop.
     screen.fill(ai_settings.bg_color)
-    ball.blitme()
+    # Redraw all balls behind attacker and defenders.
+    for ball in balls.sprites():
+        ball.draw_ball()
+    attacker.blitme()
+
+    #ball.draw_ball()
 
     # Make  the most recently drawn screen visible.
     pygame.display.flip()
+
+def update_balls(ai_settings, balls):
+    """Update position of balls and get rid of old balls."""
+    # Update ball positions.
+    balls.update()
+
+    # Get rid of bullets that have disappeared.
+    for ball in balls.copy():
+        if ball.rect.left >= ai_settings.screen_width:
+            balls.remove(ball)

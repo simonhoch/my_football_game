@@ -1,8 +1,10 @@
 import sys
 
 import pygame
+from pygame.sprite import Group
 
 from settings import Settings
+from attacker import Attacker
 from ball import Ball
 import game_functions as gf
 
@@ -14,13 +16,17 @@ def run_game():
             (ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption("Foot ball game")
 
-    # Make a ball.
-    ball = Ball(ai_settings, screen)
+    # Make an attacker.
+    attacker = Attacker(ai_settings, screen)
+
+    # Make a group to store balls in.
+    balls = Group()
 
     # Start the main loop for the game.
     while True:
-        gf.check_events(ball)
-        ball.update()
-        gf.update_screen(ai_settings, screen, ball)
+        gf.check_events(ai_settings, screen, attacker, balls)
+        attacker.update()
+        gf.update_balls(ai_settings, balls)
+        gf.update_screen(ai_settings, screen, attacker, balls)
 
 run_game()
