@@ -20,6 +20,11 @@ class Ball(Sprite):
 
         self.speed_factor = ai_settings.ball_speed_factor
 
+    def initial_update_ball(self, attacker):
+        """Move the initial ball with the attacker."""
+        self.rect.bottom = attacker.rect.bottom
+        self.rect.right = attacker.rect.right
+
     def update(self):
         """Move  the ball on the righ of the screen."""
         # Update the decimal position of the ball.

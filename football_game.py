@@ -14,19 +14,24 @@ def run_game():
     ai_settings = Settings()
     screen = pygame.display.set_mode(
             (ai_settings.screen_width, ai_settings.screen_height))
-    pygame.display.set_caption("Foot ball game")
+    pygame.display.set_caption("Football game")
 
     # Make an attacker.
     attacker = Attacker(ai_settings, screen)
+
+    # Make the initial ball
+    initial_ball = Ball(ai_settings, screen, attacker)
 
     # Make a group to store balls in.
     balls = Group()
 
     # Start the main loop for the game.
     while True:
-        gf.check_events(ai_settings, screen, attacker, balls)
+        gf.check_events(ai_settings, screen, attacker,
+                initial_ball, balls)
         attacker.update()
+        initial_ball.initial_update_ball(attacker)
         gf.update_balls(ai_settings, balls)
-        gf.update_screen(ai_settings, screen, attacker, balls)
+        gf.update_screen(ai_settings, screen, attacker, initial_ball, balls)
 
 run_game()
