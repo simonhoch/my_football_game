@@ -23,11 +23,12 @@ def run_game():
     # Make the initial ball
     initial_ball = Ball(ai_settings, screen, attacker)
 
-    # Make a group to store balls in.
+    # Make a group of balls and a group of defender.
     balls = Group()
+    defenders = Group()
 
-    # Make a defender.
-    defender = Defender(ai_settings, screen)
+    # Create the defense.
+    gf.create_defense(ai_settings, screen, defenders)
     # Start the main loop for the game.
     while True:
         gf.check_events(ai_settings, screen, attacker,
@@ -35,7 +36,7 @@ def run_game():
         attacker.update()
         initial_ball.initial_update_ball(attacker)
         gf.update_balls(ai_settings, balls)
-        gf.update_screen(ai_settings, screen, attacker, defender,
+        gf.update_screen(ai_settings, screen, attacker, defenders,
                 initial_ball, balls)
 
 run_game()
