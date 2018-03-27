@@ -5,6 +5,7 @@ from pygame.sprite import Group
 
 from settings import Settings
 from attacker import Attacker
+from defender import Defender
 from ball import Ball
 import game_functions as gf
 
@@ -25,6 +26,8 @@ def run_game():
     # Make a group to store balls in.
     balls = Group()
 
+    # Make a defender.
+    defender = Defender(ai_settings, screen)
     # Start the main loop for the game.
     while True:
         gf.check_events(ai_settings, screen, attacker,
@@ -32,6 +35,7 @@ def run_game():
         attacker.update()
         initial_ball.initial_update_ball(attacker)
         gf.update_balls(ai_settings, balls)
-        gf.update_screen(ai_settings, screen, attacker, initial_ball, balls)
+        gf.update_screen(ai_settings, screen, attacker, defender,
+                initial_ball, balls)
 
 run_game()

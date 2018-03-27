@@ -49,9 +49,9 @@ def check_events (ai_settings, screen, attacker,
             check_keydown_events(event, ai_settings, screen, attacker,
                     initial_ball, balls)
         elif event.type == pygame.KEYUP:
-            check_keyup_events(event, attacker, initial_ball)
+            check_keyup_events(event, attacker)
 
-def update_screen(ai_settings, screen, attacker, initial_ball, balls):
+def update_screen(ai_settings, screen, attacker, defender, initial_ball, balls):
     """Update images on the screen and flip to the new screen."""
     # Redraw the screen during each pass through the loop.
     screen.fill(ai_settings.bg_color)
@@ -61,7 +61,8 @@ def update_screen(ai_settings, screen, attacker, initial_ball, balls):
         ball.draw_ball()
     attacker.blitme()
     initial_ball.draw_ball()
-    # Make  the most recently drawn screen visible.
+    defender.blitme()
+    # Make the most recently drawn screen visible.
     pygame.display.flip()
 
 def update_balls(ai_settings, balls):
