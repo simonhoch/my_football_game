@@ -4,6 +4,7 @@ import pygame
 
 from ball import Ball
 from defender import Defender
+from random import randint
 
 def check_keydown_events(event, ai_settings, screen, attacker,
         initial_ball, balls):
@@ -72,25 +73,49 @@ def update_balls(ai_settings, balls):
     # Update ball positions.
     balls.update()
 
-    # Get rid of bullets that have disappeared.
+    # Get rid of balls that have disappeared.
     for ball in balls.copy():
         if ball.rect.left >= ai_settings.screen_width:
             balls.remove(ball)
 
-def create_defense(ai_settings, screen, defenders):
-    """Create a full fleet of aliens."""
-    # Create an defender  and find the nummber of defenders in a row.
-    # Spacing between each defender is equal to one defender width.
+def get_number_defenders_y(ai_settings, defender_height):
+    """Determine the number of defender that fit in a row."""
+    random_defender = randint(2,4)
+    available_space_y = ai_settings.screen_height - 2 * defender_height
+    number_defenders_y = int(available_space_y /
+            (random_defender * defender_height))
+    return number_defenders_y
+
+def get_number_rows(ai_settings, defender_width):
+    """Determine the number of rows of the defense."""
+    random_rows = randint(3,6)
+    available_space_x = (ai_settings.screen_width -
+            (random_rows * defender_width))
+    number_rows = int(available_space_x / (3 * defender_width))
+    return number_rows
+
+def create_defender(ai_settings, screen, defenders, defender_number,
+        row_number):
+    """Create a defender and place it in the row."""
     defender = Defender(ai_settings, screen)
     defender_height = defender.rect.height
-    available_space_y = ai_settings.screen_height - 2 * defender_height
-    number_defenders_y = int(available_space_y / (2 * defender_height))
+    defender.y  = (defender_height + 3 * defender_height *
+        defender_number)
+    defender.rect.y = defender.y
+    defender.rect.x = defender.rect.width + (4 * defender.rect.width *
+            row_number)
+    defenders.add(defender)
+
+def create_defense(ai_settings, screen, attacker, defenders):
+    """Create the defense."""
+    # Create a defender and find the number of defenders in a row.
+    defender = Defender(ai_settings, screen)
+    number_defenders_y = get_number_defenders_y(ai_settings, defender.
+            rect.height)
+    number_rows = get_number_rows(ai_settings, defender.rect.width)
 
     # Create the first row of defenders.
-    for defender_number in range(number_defenders_y):
-        # Create an defender  and place it in the row.
-        defender = Defender(ai_settings, screen)
-        defender.y  = (defender_height + 2 * defender_height *
-                defender_number)
-        defender.rect.y = defender.y
-        defenders.add(defender)
+    for row_number in range(number_rows):
+        for defender_number in range(number_defenders_y):
+            create_defender(ai_settings, screen, defenders,
+                    defender_number, row_number)

@@ -28,7 +28,7 @@ def run_game():
     defenders = Group()
 
     # Create the defense.
-    gf.create_defense(ai_settings, screen, defenders)
+    gf.create_defense(ai_settings, screen, attacker, defenders)
     # Start the main loop for the game.
     while True:
         gf.check_events(ai_settings, screen, attacker,
