@@ -88,10 +88,10 @@ def get_number_defenders_y(ai_settings, defender_height):
 
 def get_number_rows(ai_settings, defender_width):
     """Determine the number of rows of the defense."""
-    random_rows = randint(3,6)
-    available_space_x = (ai_settings.screen_width -
-            (random_rows * defender_width))
-    number_rows = int(available_space_x / (3 * defender_width))
+    #random_rows = randint(3,6)
+    #available_space_x = (ai_settings.screen_width -
+            #(random_rows * defender_width))
+    number_rows = 3 #int(available_space_x / (3 * defender_width))
     return number_rows
 
 def create_defender(ai_settings, screen, defenders, defender_number,
@@ -102,7 +102,7 @@ def create_defender(ai_settings, screen, defenders, defender_number,
     defender.y  = (defender_height + 3 * defender_height *
         defender_number)
     defender.rect.y = defender.y
-    defender.rect.x = defender.rect.width + (4 * defender.rect.width *
+    defender.rect.x = ai_settings.screen_width - (4 * defender.rect.width *
             row_number)
     defenders.add(defender)
 
