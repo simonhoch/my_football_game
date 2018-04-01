@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 
 import pygame
 
@@ -41,7 +42,7 @@ def check_keyup_events(event, attacker):
     elif event.key == pygame.K_q:
         sys.exit()
 
-def check_events (ai_settings, screen, attacker,
+def check_events (ai_settings, screen, stats, attacker,
         initial_ball, balls):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
@@ -68,7 +69,7 @@ def update_screen(ai_settings, screen, attacker, defenders, initial_ball, balls)
     # Make the most recently drawn screen visible.
     pygame.display.flip()
 
-def update_balls(ai_settings, balls):
+def update_balls(ai_settings, screen, stats, attacker, defenders, balls):
     """Update position of balls and get rid of old balls."""
     # Update ball positions.
     balls.update()
@@ -77,6 +78,17 @@ def update_balls(ai_settings, balls):
     for ball in balls.copy():
         if ball.rect.left >= ai_settings.screen_width:
             balls.remove(ball)
+    check_ball_defender_collisions(ai_settings, stats, screen, attacker,
+        defenders, balls)
+
+def check_ball_defender_collisions(ai_settings, stats, screen, attacker,
+        defenders, balls):
+    """Respond to bullet-alien collisions."""
+    # Remove ball that collided a defenser and set flag to false.
+    collisions = pygame.sprite.groupcollide(balls, defenders, True, False)
+    if collisions:
+        attacker_hit(ai_settings, stats, screen, attacker,
+                defenders, balls)
 
 def get_number_defenders_y(ai_settings, defender_height):
     """Determine the number of defender that fit in a row."""
@@ -133,10 +145,35 @@ def change_defense_direction(ai_settings, defenders):
         defender.rect.x -=ai_settings.defense_move_speed
     ai_settings.defense_direction *= -1
 
-def update_defenders(ai_settings,defenders):
+def attacker_hit(ai_settings, stats, screen, attacker, defenders, balls):
+    """Respond to attacker being hit by a defender."""
+    if stats.attackers_left >0:
+        # Decrement attackers left.
+        stats.attackers_left -=1
+
+        # Empty the list of defenders and balls.
+        defenders.empty()
+        balls.empty()
+
+        # Create a new defence and replace the attacker.
+        create_defense(ai_settings,screen, attacker,defenders)
+        attacker.replace_attacker()
+
+        # Pause.
+        sleep(0.5)
+
+    else:
+        stats.game_active = False
+
+def update_defenders(ai_settings, stats, screen, attacker,
+        defenders, balls):
     """
     check if the defense is at an edge,
     and the update the positions of all defenders in the defense.
     """
     check_defense_edges(ai_settings, defenders)
     defenders.update()
+
+    # Look for attacker-defender collisions.
+    if pygame.sprite.spritecollideany(attacker, defenders):
+        attacker_hit(ai_settings, stats, screen, attacker, defenders,  balls)

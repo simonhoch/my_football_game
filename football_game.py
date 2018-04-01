@@ -4,6 +4,7 @@ import pygame
 from pygame.sprite import Group
 
 from settings import Settings
+from game_stats import GameStats
 from attacker import Attacker
 from defender import Defender
 from ball import Ball
@@ -16,6 +17,9 @@ def run_game():
     screen = pygame.display.set_mode(
             (ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption("Football game")
+
+    # Create an instance to store game statistics.
+    stats = GameStats(ai_settings)
 
     # Make an attacker.
     attacker = Attacker(ai_settings, screen)
@@ -31,12 +35,17 @@ def run_game():
     gf.create_defense(ai_settings, screen, attacker, defenders)
     # Start the main loop for the game.
     while True:
-        gf.check_events(ai_settings, screen, attacker,
+        gf.check_events(ai_settings, screen, stats, attacker,
                 initial_ball, balls)
-        attacker.update()
-        initial_ball.initial_update_ball(attacker)
-        gf.update_balls(ai_settings, balls)
-        gf.update_defenders(ai_settings, defenders)
+
+        if stats.game_active:
+            attacker.update()
+            initial_ball.initial_update_ball(attacker)
+            gf.update_balls(ai_settings, screen, stats, attacker,
+                    defenders, balls)
+            gf.update_defenders(ai_settings, stats, screen, attacker,
+                    defenders, balls)
+
         gf.update_screen(ai_settings, screen, attacker, defenders,
                 initial_ball, balls)
 

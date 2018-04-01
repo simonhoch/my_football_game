@@ -13,11 +13,11 @@ class Attacker():
         self.screen_rect = screen.get_rect()
 
         # Start each new attacker at the center of the screen.
-        self.rect.x = 0
+        self.rect.centerx = 0 + self.rect.width
         self.rect.centery = self.screen_rect.centery
 
         #Store a decimal value for the attacker's center.
-        self.centerx = float(self.rect.centerx)
+        self.centerx = float(self.rect.x)
         self.centery = float(self.rect.centery)
 
         # Movement flag
@@ -46,4 +46,7 @@ class Attacker():
         """Draw the ship at its current location."""
         self.screen.blit(self.image, self.rect)
 
-
+    def replace_attacker(self):
+        """Replace attacker on the initial position."""
+        self.centerx = 0 + (self.rect.width / 2)
+        self.centery = self.screen_rect.centery

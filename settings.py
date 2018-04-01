@@ -11,6 +11,7 @@ class Settings():
         # Attacker settings.
         self.ball_speed_factor = 2
         self.balls_allowed = 1
+        self.attackers_limit = 3
         # Defender settings.
         self.defender_speed_factor = 1
         self.defense_move_speed = 10
