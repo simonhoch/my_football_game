@@ -13,7 +13,7 @@ class Attacker():
         self.screen_rect = screen.get_rect()
 
         # Start each new attacker at the center of the screen.
-        self.rect.centerx = self.screen_rect.centerx
+        self.rect.x = 0
         self.rect.centery = self.screen_rect.centery
 
         #Store a decimal value for the attacker's center.

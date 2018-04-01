@@ -11,3 +11,8 @@ class Settings():
         # Attacker settings.
         self.ball_speed_factor = 2
         self.balls_allowed = 1
+        # Defender settings.
+        self.defender_speed_factor = 1
+        self.defense_move_speed = 10
+        # defense_direction of 1 represent up : -1 represents down.
+        self.defense_direction = 1

@@ -36,6 +36,7 @@ def run_game():
         attacker.update()
         initial_ball.initial_update_ball(attacker)
         gf.update_balls(ai_settings, balls)
+        gf.update_defenders(ai_settings, defenders)
         gf.update_screen(ai_settings, screen, attacker, defenders,
                 initial_ball, balls)
 

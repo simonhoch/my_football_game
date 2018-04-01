@@ -80,7 +80,7 @@ def update_balls(ai_settings, balls):
 
 def get_number_defenders_y(ai_settings, defender_height):
     """Determine the number of defender that fit in a row."""
-    random_defender = randint(2,4)
+    random_defender = randint(2,3)
     available_space_y = ai_settings.screen_height - 2 * defender_height
     number_defenders_y = int(available_space_y /
             (random_defender * defender_height))
@@ -91,7 +91,7 @@ def get_number_rows(ai_settings, defender_width):
     #random_rows = randint(3,6)
     #available_space_x = (ai_settings.screen_width -
             #(random_rows * defender_width))
-    number_rows = 3 #int(available_space_x / (3 * defender_width))
+    number_rows = 4 #int(available_space_x / (3 * defender_width))
     return number_rows
 
 def create_defender(ai_settings, screen, defenders, defender_number,
@@ -119,3 +119,24 @@ def create_defense(ai_settings, screen, attacker, defenders):
         for defender_number in range(number_defenders_y):
             create_defender(ai_settings, screen, defenders,
                     defender_number, row_number)
+
+def check_defense_edges(ai_settings, defenders):
+    """Respond appropriately if any defenders have reached an edge."""
+    for defender in defenders.sprites():
+        if defender.check_edges():
+            change_defense_direction(ai_settings, defenders)
+            break
+
+def change_defense_direction(ai_settings, defenders):
+    """Move the defence and change its direction."""
+    for defender  in defenders.sprites():
+        defender.rect.x -=ai_settings.defense_move_speed
+    ai_settings.defense_direction *= -1
+
+def update_defenders(ai_settings,defenders):
+    """
+    check if the defense is at an edge,
+    and the update the positions of all defenders in the defense.
+    """
+    check_defense_edges(ai_settings, defenders)
+    defenders.update()

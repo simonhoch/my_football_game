@@ -24,3 +24,17 @@ class Defender(Sprite):
     def blitme(self):
         """Draw the defender at its current location."""
         self.screen.blit(self.image, self.rect)
+
+    def check_edges(self):
+        """Return True if alien is at edge of screen."""
+        screen_rect = self.screen.get_rect()
+        if self.rect.top <= 0:
+            return True
+        elif self.rect.bottom >= screen_rect.bottom:
+            return True
+
+    def update(self):
+        """Move the defender down or up."""
+        self.y += (self.ai_settings.defender_speed_factor *
+                self.ai_settings.defense_direction)
+        self.rect.y = self.y
